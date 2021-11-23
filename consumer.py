@@ -1,9 +1,8 @@
-import pika
-import json
+import pika, json
 
 from main import Product, db
 
-params = pika.URLParameters('amqps://jejgzgvr:KwWWwFSO6r6dFFYR3mNixADW5PS1OBIS@gerbil.rmq.cloudamqp.com/jejgzgvr')
+params = pika.URLParameters('amqps://dpubrmwx:dBAPxZ969vFJxH98CWyCkV4WAD2jPSpu@vulture.rmq.cloudamqp.com/dpubrmwx')
 
 connection = pika.BlockingConnection(params)
 
@@ -18,8 +17,7 @@ def callback(ch, method, properties, body):
     print(data)
 
     if properties.content_type == 'product_created':
-        product = Product(
-            id=data['id'], title=data['title'], image=data['image'])
+        product = Product(id=data['id'], title=data['title'], image=data['image'])
         db.session.add(product)
         db.session.commit()
         print('Product Created')
@@ -38,8 +36,7 @@ def callback(ch, method, properties, body):
         print('Product Deleted')
 
 
-channel.basic_consume(
-    queue='main', on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue='main', on_message_callback=callback, auto_ack=True)
 
 print('Started Consuming')
 
